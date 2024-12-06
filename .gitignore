@@ -1,0 +1,12 @@
+# Visual Studio
+.vs
+.vscode
+.idea
+bin
+obj
+
+# Mac kullanıcıları için
+.DS_Store
+
+# Windows kullanıcıları için
+Thumbs.db
