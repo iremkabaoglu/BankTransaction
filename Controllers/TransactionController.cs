@@ -43,21 +43,31 @@ namespace BankTransaction.Controllers
         }
 
         // GET: Transaction/AddOrEdit
-        public IActionResult AddOrEdit()
+        public IActionResult AddOrEdit(int id=0)
         {
-            return View(new Transaction());
+            if (id == 0)
+                return View(new Transaction());
+            else
+                return View(_context.Transactions.Find(id));
         }
 
-        // POST: Transaction/Create
+        // POST: Transaction/AddOrEdit
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TransactionId,AccountNumber,BeneficaryName,BankName,SWIFTCode,Amount,Date")] Transaction transaction)
+        public async Task<IActionResult> AddOrEdit([Bind("TransactionId,AccountNumber,BeneficaryName,BankName,SWIFTCode,Amount,Date")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(transaction);
+                if(transaction.TransactionId==0)
+                {
+                    transaction.Date = DateTime.Now;
+                    _context.Add(transaction);
+
+                }
+                else
+                    _context.Update(transaction);           
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -148,9 +158,6 @@ namespace BankTransaction.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TransactionExists(int id)
-        {
-            return _context.Transactions.Any(e => e.TransactionId == id);
-        }
+        
     }
 }
